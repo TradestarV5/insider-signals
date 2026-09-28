@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "insider-signals"
+version = "1.0.0"
+description = "Dependency-free Python client for the TradeStar Insider API — filing-verified SEC Form 4 insider-buy signals."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+keywords = ["sec", "edgar", "form-4", "insider-trading", "finance", "mcp"]
+authors = [{ name = "TradeStar Insider" }]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Office/Business :: Financial :: Investment",
+]
+
+[project.urls]
+Homepage = "https://www.tradestarinsider.com"
+API = "https://api.tradestarinsider.com/v1/openapi.json"
+"MCP server" = "https://mcp.tradestarinsider.com/mcp"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/insider_signals"]

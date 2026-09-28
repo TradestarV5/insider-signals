@@ -1,0 +1,42 @@
+{
+  "name": "insider-signals",
+  "version": "1.0.0",
+  "description": "Dependency-free Node client for the TradeStar Insider API — filing-verified SEC Form 4 insider-buy signals.",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "examples/rest_api.mjs"
+  ],
+  "scripts": {
+    "test": "node examples/rest_api.mjs --smoke"
+  },
+  "keywords": [
+    "sec",
+    "edgar",
+    "form-4",
+    "insider-trading",
+    "finance",
+    "mcp"
+  ],
+  "author": "TradeStar Insider",
+  "license": "MIT",
+  "homepage": "https://www.tradestarinsider.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tradestarinsider/insider-signals"
+  },
+  "bugs": {
+    "url": "https://www.tradestarinsider.com"
+  }
+}
