@@ -5,7 +5,6 @@ language:
   - en
 task_categories:
   - tabular-classification
-  - time-series-forecasting
 tags:
   - finance
   - sec-edgar
