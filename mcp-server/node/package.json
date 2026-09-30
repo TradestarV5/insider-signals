@@ -1,0 +1,48 @@
+{
+  "name": "insider-signals-mcp",
+  "version": "1.0.0",
+  "description": "Local stdio MCP proxy for the TradeStar Insider server — filing-verified SEC Form 4 insider-buy signals. No API key.",
+  "type": "module",
+  "mcpName": "com.tradestarinsider/edgar-insider-signals",
+  "bin": {
+    "insider-signals-mcp": "index.js"
+  },
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/smoke.mjs"
+  },
+  "keywords": [
+    "sec",
+    "edgar",
+    "form-4",
+    "insider-trading",
+    "finance",
+    "mcp",
+    "mcp-server",
+    "stdio"
+  ],
+  "author": "TradeStar Insider",
+  "license": "MIT",
+  "homepage": "https://www.tradestarinsider.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TradestarV5/insider-signals.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TradestarV5/insider-signals/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0"
+  }
+}
