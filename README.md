@@ -1,26 +1,60 @@
 # Insider Buy Signals
 
-Filing-verified U.S. insider open-market **purchase** signals, parsed straight from SEC EDGAR
-Form 4 filings. This repo is the MIT-licensed client library and worked examples for the
-[TradeStar Insider](https://www.tradestarinsider.com) API and MCP server.
+**Verify any U.S. SEC filing claim, field-by-field, against the filing it came from.** Every
+figure here — shares, price, dollar value, percent, stake size — traces to a parsed field in a
+real EDGAR filing and ships with a link to that filing on sec.gov. Records that can't be linked
+to a filing are dropped, never guessed: no scores, no unsourced numbers. We call this Rule 2.
+This repo is the MIT-licensed MCP server, client library, and worked examples for the
+[TradeStar Insider](https://www.tradestarinsider.com) API.
 
 - **Website:** https://www.tradestarinsider.com
-- **REST (OpenAPI 3.0.2):** https://api.tradestarinsider.com/v1/openapi.json
 - **MCP server (Streamable HTTP, no auth):** `https://mcp.tradestarinsider.com/mcp`
+- **REST (OpenAPI 3.0.2):** https://api.tradestarinsider.com/v1/openapi.json
 - **Live status:** https://status.tradestarinsider.com
+
+## Run the MCP server locally
+
+The server is published as `insider-signals-mcp` — a tiny stdio proxy to the remote endpoint.
+Run it with no install using [`uvx`](https://docs.astral.sh/uv/):
+
+```bash
+uvx insider-signals-mcp
+```
+
+To wire it into **Claude Desktop**, add this to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "insider-signals": {
+      "command": "uvx",
+      "args": ["insider-signals-mcp"]
+    }
+  }
+}
+```
+
+Or point any MCP client straight at the remote endpoint (no proxy needed):
+`https://mcp.tradestarinsider.com/mcp` (Streamable HTTP, no auth). The verify tools are the
+core: check an insider purchase, an activist 13D stake, an 8-K event, or a 13F holding against
+its source filing.
 
 ## What the data is
 
-We read Form 4 filings from SEC EDGAR and keep only the open-market **buys** that carry
-information:
+Five filing-verified families from SEC EDGAR (plus federal contract awards from USAspending):
 
-- **Cluster buys** — two or more insiders buying the same company inside a single window of
-  seven calendar days or fewer.
-- **Large buys** — purchases large relative to the insider's existing holdings.
+- **Insider Form 4 purchases** (SEC transaction code P) — cluster buys (two or more insiders
+  buying the same company inside a window of seven calendar days or fewer) and buys large
+  relative to the insider's existing holdings.
+- **Activist Schedule 13D stakes**, **13F fund position changes**, and **recent federal
+  contract awards**.
 
-Option exercises, 10b5-1 planned sales, and sub-threshold noise (below $50,000) are dropped.
-Every field we return — shares, price, dollar value, percent versus holdings — is parsed from a
-real filing and ships with a link to that filing on sec.gov. **Records that can't be linked to a
+**Code P does not by itself prove an open-market buy.** A purchase filed under P can be an
+IPO / offering / private-placement allocation, so every purchase record carries an
+`offering_context` flag (true = allocation, not open-market) and clusters carry a
+`uniform_price_cluster` flag marking a single administered price. Option exercises, 10b5-1
+planned sales, and sub-threshold noise (below $50,000) are dropped. Every field we return is
+parsed from a real filing and ships with its sec.gov link. **Records that can't be linked to a
 filing are dropped, never guessed. No scores, no unsourced numbers.** We call this Rule 2.
 
 ## What the data is *not*
