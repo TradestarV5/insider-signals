@@ -46,7 +46,7 @@ def main() -> None:
 
 
 def _print_signal(s: dict) -> None:
-    # Every field is parsed from the filing; filing_url is the sec.gov source (Rule 2).
+    # Every field is parsed from the filing; filing_url is the sec.gov source (filing-verified).
     val = s.get("value_usd")
     val_s = f"${val:,.0f}" if isinstance(val, (int, float)) else "?"
     tag = "cluster" if s.get("cluster") else "large buy"

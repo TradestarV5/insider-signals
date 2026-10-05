@@ -17,7 +17,7 @@ information — **cluster buys** (2+ insiders, same company, ≤7 days) and **la
 (large relative to the insider's existing holdings). Option exercises, 10b5-1 planned sales,
 and sub-$50,000 noise are dropped. Every field returned is parsed from a real filing and ships
 with a link to that filing on sec.gov. **Records that can't be linked to a filing are dropped,
-never guessed. No scores, no unsourced numbers.** We call this Rule 2.
+never guessed. No scores, no unsourced numbers.** We call this filing-verified.
 
 ## What the data is *not*
 

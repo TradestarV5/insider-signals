@@ -2,7 +2,7 @@
 //
 // Filing-verified U.S. insider open-market purchase signals from SEC EDGAR Form 4. Every field
 // returned traces to a parsed field in a real filing and carries its `filing_url` on sec.gov
-// (the service's "Rule 2"); records that can't be linked to a filing are dropped, never guessed.
+// (the service is filing-verified); records that can't be linked to a filing are dropped, never guessed.
 //
 //     import { InsiderSignals } from "insider-signals";
 //

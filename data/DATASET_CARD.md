@@ -17,20 +17,21 @@ size_categories:
 source_datasets:
   - original
 ---
-# TradeStar Insider — SEC Form 4 Open-Market Purchase Signals (2026-09)
+# TradeStar Insider — SEC Form 4 Open-Market Purchase Signals (2026-10)
 
 A monthly open snapshot of insider **open-market purchase** signals extracted from
 **SEC EDGAR Form 4** filings. Every row is derived from a real, publicly filed Form 4
 and links back to that exact filing on `sec.gov` via `filing_url`.
 
-- **Snapshot month:** `2026-09`  (file: `insider-signals-2026-09.csv`)
-- **Rows in this snapshot:** 283
-- **Distinct tickers:** 134
-- **Cluster-buy rows:** 91  (≥2 insiders in the same issuer within the window)
-- **Uniform-price-cluster rows (offering/conversion tell):** 36
-- **Total reported purchase value:** $731,247,486
-- **Coverage window of the live dataset:** `2026-01-20` → `2026-09-25`
-- **Cadence:** regenerated **monthly** by cron (this file is the open snapshot for `2026-09`)
+- **Snapshot month:** `2026-10`  (file: `insider-signals-2026-10.csv`)
+- **Rows in this snapshot:** 26
+- **Distinct tickers:** 20
+- **Cluster-buy rows:** 5  (≥2 insiders in the same issuer within the window)
+- **Uniform-price-cluster rows (offering/conversion tell):** 0
+- **Unlisted-issuer rows (`listed_equity=false`):** 8  (blank/NONE/N/A ticker, or a 5-letter mutual-fund class — shipped here but excluded from the live signal/cluster feeds by default)
+- **Total reported purchase value:** $48,539,967
+- **Coverage window of the live dataset:** `2026-01-20` → `2026-10-02`
+- **Cadence:** regenerated **monthly** by cron (this file is the open snapshot for `2026-10`)
 
 ## Provenance & RULE-2
 
@@ -67,6 +68,7 @@ the latter are marked, and such rows are ranked below genuine clusters.
 | `cluster_insiders` | Distinct insiders in the cluster. |
 | `cluster_notional` | Total cluster purchase value (USD). |
 | `uniform_price_cluster` | `true` = offering/conversion tell (see RULE-2 exception above). |
+| `listed_equity` | `true` only when the ticker resolves to an **exchange-listed common stock**; `false` for a blank/`NONE`/`N/A` ticker or a 5-letter mutual-fund class (e.g. `BBASX`). This open snapshot ships **all** rows with the flag; the live `/signals` + `/clusters` tools default to listed-only (`include_unlisted=true` to override). |
 | `s2` | Large-vs-holdings flag. |
 | `accession` | SEC accession number of the filing. |
 | `filing_url` | **Direct `sec.gov` link to the source filing (present on every row).** |
@@ -75,7 +77,7 @@ the latter are marked, and such rows are ranked below genuine clusters.
 
 ```python
 import pandas as pd
-df = pd.read_csv("insider-signals-2026-09.csv")
+df = pd.read_csv("insider-signals-2026-10.csv")
 # Verify any row at its source filing:
 print(df.loc[0, "filing_url"])
 ```
@@ -86,6 +88,42 @@ This dataset reports **what was filed**, not what it means. It is **not investme
 advice** and carries no recommendation. Insider purchases are one public signal among
 many. **Verify every row at its `filing_url`** before relying on it — the SEC filing
 is the source of truth, this snapshot is a convenience projection of it.
+
+## Changelog
+
+- **2026-10-03 — exact-duplicate dedup (E1).** Rows are now collapsed on the unique
+  `(accession, txn_index)` key: a single filed transaction line that previously
+  surfaced twice (e.g. once under the reporter CIK path and once under the issuer
+  CIK path, or a true same-CIK repeat) is kept **once**, with the issuer-CIK
+  `filing_url` as the canonical link. Full-corpus effect of this change:
+  **3,011 → 2,996 rows (−15 exact duplicate pairs removed).** Every surviving row
+  still carries its `filing_url` (RULE-2 unchanged); no transaction was lost, only
+  its duplicate projection.
+- **2026-10-03 — same-offering sibling flagging (E2).** `offering_context` now
+  propagates across sibling filings: when several insiders buy into the **same
+  offering** (same issuer, same transaction date, same price) and any one filing
+  carries the offering tell (an offering footnote or a same-filing convertible-
+  preferred conversion), the sibling filings at that identical issuer+date+price are
+  also marked `offering_context=true` with reason `"same offering, sibling filing"`.
+  This closes the gap where a co-investor in the same deal looked like an independent
+  open-market buyer. Full-corpus effect: **40 rows across 14 same-offering groups
+  flipped `offering_context` false → true.** Before/after example: the $17.00 ADARx
+  (ADRX) offering, transaction date 2026-09-28 — SR One Capital and George Simeon
+  (filed 2026-09-29) were `false`, now `true` as siblings of the OrbiMed/Gordon
+  filings already flagged in the same offering. No row's `filing_url` changed
+  (RULE-2 unchanged).
+
+- **2026-10-03 — listed-equity flag (E3).** Every row now carries a `listed_equity`
+  boolean: `true` only for an exchange-listed common stock, `false` for an unlisted
+  issuer (blank/`NONE`/`N/A` ticker, or a 5-letter mutual-fund class such as `BBASX`,
+  `PMPEX`). The live signal + cluster tools now default to **listed-only**
+  (`include_unlisted=true` to override); this open snapshot still ships **every** row
+  so the data stays complete and self-describing. Full-corpus effect: of **2,996**
+  rows, **286 are now flagged `listed_equity=false`** (2,710 listed) and are hidden
+  from the default live feed. Before/after example: `BBASX` — *AMG BBH Asset-Backed
+  Credit Fund, LLC* (filed 2026-09-30) previously appeared in the default signal feed;
+  it is now `listed_equity=false` and excluded unless `include_unlisted=true`. No row's
+  `filing_url` changed (RULE-2 unchanged); no row was dropped from the open dataset.
 
 ## License
 

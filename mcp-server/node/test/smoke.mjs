@@ -34,7 +34,7 @@ async function viaProxy() {
   await c.connect(transport);
   const list = await c.listTools();
   const call = await c.callTool({
-    name: "insider_signals_today",
+    name: "insider_buys",
     arguments: { limit: 3 },
   });
   await c.close();

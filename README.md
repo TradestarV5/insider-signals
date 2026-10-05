@@ -3,14 +3,18 @@
 **Verify any U.S. SEC filing claim, field-by-field, against the filing it came from.** Every
 figure here — shares, price, dollar value, percent, stake size — traces to a parsed field in a
 real EDGAR filing and ships with a link to that filing on sec.gov. Records that can't be linked
-to a filing are dropped, never guessed: no scores, no unsourced numbers. We call this Rule 2.
-This repo is the MIT-licensed MCP server, client library, and worked examples for the
+to a filing are dropped, never guessed: no scores, no unsourced numbers. We call this filing-verified.
+We also ran the obvious question — does insider buying predict returns? — as four sealed,
+pre-registered tests. I tried four times to prove otherwise, and four times the data said no;
+the full record is at https://www.tradestarinsider.com/what-we-tested. This repo is the
+MIT-licensed MCP server, client library, and worked examples for the
 [TradeStar Insider](https://www.tradestarinsider.com) API.
 
 - **Website:** https://www.tradestarinsider.com
 - **MCP server (Streamable HTTP, no auth):** `https://mcp.tradestarinsider.com/mcp`
 - **REST (OpenAPI 3.0.2):** https://api.tradestarinsider.com/v1/openapi.json
 - **Live status:** https://status.tradestarinsider.com
+- **What we tested (negative results):** https://www.tradestarinsider.com/what-we-tested
 
 ## Run the MCP server locally
 
@@ -55,14 +59,16 @@ IPO / offering / private-placement allocation, so every purchase record carries 
 `uniform_price_cluster` flag marking a single administered price. Option exercises, 10b5-1
 planned sales, and sub-threshold noise (below $50,000) are dropped. Every field we return is
 parsed from a real filing and ships with its sec.gov link. **Records that can't be linked to a
-filing are dropped, never guessed. No scores, no unsourced numbers.** We call this Rule 2.
+filing are dropped, never guessed. No scores, no unsourced numbers.** We call this filing-verified.
 
 ## What the data is *not*
 
-It is **not a prediction.** We tested whether these two filters precede price moves over our own
-history and could not find a return edge distinguishable from base rate, so we do not claim one.
-This is a clean, filing-verified *lookup and verification* layer over public purchases — you
-decide what they mean. It is also **not real-time**: ingestion is a once-daily weekday cron, so
+It is **not a prediction.** We ran four pre-registered, sealed tests for whether insider buying
+precedes price moves over our own history, and all four returned NULL — no return edge
+distinguishable from base rate — so we do not claim one. The full record (question, method,
+sample, number, verdict per test) is public at
+[**What we tested**](https://www.tradestarinsider.com/what-we-tested). This is a clean,
+filing-verified *lookup and verification* layer over public purchases — you decide what they mean. It is also **not real-time**: ingestion is a once-daily weekday cron, so
 new filings surface **next business day**, not live.
 
 ## Coverage

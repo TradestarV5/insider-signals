@@ -1,7 +1,7 @@
 {
   "name": "insider-signals-mcp",
   "version": "1.0.0",
-  "description": "Local stdio MCP proxy for the TradeStar Insider server — filing-verified SEC Form 4 insider-buy signals. No API key.",
+  "description": "Local stdio MCP proxy for the TradeStar Insider server — filing-verified SEC EDGAR data with no sign-in: insider buying (Form 4), activist stakes (13D), hedge fund changes (13F), 8-K events, federal awards, plus verify/fact-check tools. No API key.",
   "type": "module",
   "mcpName": "com.tradestarinsider/edgar-insider-signals",
   "bin": {

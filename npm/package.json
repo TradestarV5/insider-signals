@@ -34,9 +34,9 @@
   "homepage": "https://www.tradestarinsider.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tradestarinsider/insider-signals"
+    "url": "git+https://github.com/TradestarV5/insider-signals.git"
   },
   "bugs": {
-    "url": "https://www.tradestarinsider.com"
+    "url": "https://github.com/TradestarV5/insider-signals/issues"
   }
 }

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "insider-signals-mcp"
 version = "1.1.0"
-description = "Local stdio MCP proxy for the TradeStar Insider server — filing-verified SEC Form 4 insider-buy signals. No API key."
+description = "Local stdio MCP proxy for the TradeStar Insider server — filing-verified SEC Form 4 insider buying signals plus 13D, 8-K, and 13F verify/fact-check tools. No API key, no sign-in; a lookup and verification layer, not a trading edge."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"

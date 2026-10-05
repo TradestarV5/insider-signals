@@ -29,13 +29,15 @@ the endpoint above. A static server card (name, description, tool list) is publi
 
 | Tool | What it returns |
 |------|-----------------|
-| `insider_signals_today` | Today's filing-verified insider open-market buy signals |
-| `insider_signals_by_ticker` | Signals for a given ticker |
-| `insider_signals_by_date_range` | Signals over a filed-date range |
+| `insider_buys` | Filing-verified insider buy signals — no args for today, `ticker="AAPL"` for one ticker, `start=&end=` for a filed-date range |
 | `insider_cluster_buys` | Cluster buys — 2+ insiders in one company within 7 days |
-| `insider_filing_lookup` | A single Form 4 filing by accession number |
 | `federal_awards_recent` | Recent federal contract awards (USAspending) |
 | `activist_stakes_recent` | Recent activist 13D stakes (SEC EDGAR) |
+| `fund_position_changes` | 13F hedge fund position changes, quarter over quarter |
+| `verify_insider_purchase` | Fact-check an insider buy claim (or look up one filing by `accession`) against the Form 4 record |
+| `verify_activist_13d` | Fact-check a Schedule 13D activist-stake claim |
+| `verify_8k_event` | Fact-check an 8-K material-event item claim |
+| `verify_13f_change` | Fact-check a 13F fund position change claim |
 
 ## Calling the server programmatically
 
@@ -52,11 +54,11 @@ async def main():
             await session.initialize()
             tools = await session.list_tools()
             print("tools:", [t.name for t in tools.tools])
-            result = await session.call_tool("insider_signals_today", {})
+            result = await session.call_tool("insider_buys", {})  # no args = today
             print(result.content)
 
 asyncio.run(main())
 ```
 
 Every record carries a `filing_url` to its source on sec.gov. If a figure has no filing link,
-it is not in this feed — the server drops unlinkable records rather than guessing (Rule 2).
+it is not in this feed — the server drops unlinkable records rather than guessing (filing-verified).
