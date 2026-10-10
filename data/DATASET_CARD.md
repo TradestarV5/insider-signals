@@ -17,21 +17,20 @@ size_categories:
 source_datasets:
   - original
 ---
-# TradeStar Insider — SEC Form 4 Open-Market Purchase Signals (2026-10)
+# TradeStar Insider — SEC Form 4 Open-Market Purchase Signals (last 30 days: 2026-09-11 → 2026-10-10)
 
-A monthly open snapshot of insider **open-market purchase** signals extracted from
-**SEC EDGAR Form 4** filings. Every row is derived from a real, publicly filed Form 4
-and links back to that exact filing on `sec.gov` via `filing_url`.
+A rolling open snapshot of the **last 30 days** of insider **open-market purchase** signals extracted from **SEC EDGAR Form 4** filings. Every row is derived from a real, publicly filed Form 4 and links back to that exact filing on `sec.gov` via `filing_url`.
 
-- **Snapshot month:** `2026-10`  (file: `insider-signals-2026-10.csv`)
-- **Rows in this snapshot:** 26
-- **Distinct tickers:** 20
-- **Cluster-buy rows:** 5  (≥2 insiders in the same issuer within the window)
-- **Uniform-price-cluster rows (offering/conversion tell):** 0
-- **Unlisted-issuer rows (`listed_equity=false`):** 8  (blank/NONE/N/A ticker, or a 5-letter mutual-fund class — shipped here but excluded from the live signal/cluster feeds by default)
-- **Total reported purchase value:** $48,539,967
-- **Coverage window of the live dataset:** `2026-01-20` → `2026-10-02`
-- **Cadence:** regenerated **monthly** by cron (this file is the open snapshot for `2026-10`)
+- **Window in this file (free):** `2026-09-11` → `2026-10-10`  (the trailing 30 days — file: `insider-signals-last-30-days.csv`)
+- **Full history since 2024-01-02 is on the paid plan** — this free dataset carries the last 30 days only. The complete history, export, and higher call limits are available on the paid plan: https://www.tradestarinsider.com/pricing
+- **Rows in this snapshot:** 383
+- **Distinct tickers:** 125
+- **Cluster-buy rows:** 253  (≥2 insiders in the same issuer within the window)
+- **Uniform-price-cluster rows (offering/conversion tell):** 66
+- **Unlisted-issuer rows (`listed_equity=false`):** 53  (blank/NONE/N/A ticker, or a 5-letter mutual-fund class — shipped here but excluded from the live signal/cluster feeds by default)
+- **Total reported purchase value:** $740,506,290
+- **Coverage window of the live dataset:** `2024-01-02` → `2026-10-09`
+- **Cadence:** refreshed by cron; each refresh carries the trailing 30 days only (the free window). The full back-history is the paid plan.
 
 ## Provenance & RULE-2
 
@@ -77,7 +76,7 @@ the latter are marked, and such rows are ranked below genuine clusters.
 
 ```python
 import pandas as pd
-df = pd.read_csv("insider-signals-2026-10.csv")
+df = pd.read_csv("insider-signals-last-30-days.csv")
 # Verify any row at its source filing:
 print(df.loc[0, "filing_url"])
 ```

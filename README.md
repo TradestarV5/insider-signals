@@ -16,6 +16,27 @@ MIT-licensed MCP server, client library, and worked examples for the
 - **Live status:** https://status.tradestarinsider.com
 - **What we tested (negative results):** https://www.tradestarinsider.com/what-we-tested
 
+## Free vs paid
+
+The data is the same on every plan. Every row is filing-verified and links to its source on
+sec.gov. Plans differ only in reach and volume:
+
+| | Free | Paid — $29/month |
+| --- | --- | --- |
+| Calls | 100 / day | 100,000 / month |
+| History | last 30 days | full history to 2024-01-02 + export |
+| Verify any filing | full history, always free | full history |
+
+The free tier serves the last 30 days of filings. Older filings are not hidden: a request for
+an older date tells you the filing exists and is on the paid plan — it never claims that no
+filing exists. The `verify_*` tools check any filing across the full history for free. The paid
+plan opens on 14 October 2026.
+
+(On RapidAPI the free Basic plan is 100 calls a day, or 3,000 calls a month where the console
+allows only a monthly quota.)
+
+Full pricing and a key: https://www.tradestarinsider.com/pricing
+
 ## Run the MCP server locally
 
 The server is published as `insider-signals-mcp` — a tiny stdio proxy to the remote endpoint.
@@ -73,13 +94,19 @@ new filings surface **next business day**, not live.
 
 ## Coverage
 
-- **Insider Form 4 buys:** 172 U.S. trading days, **2026-01-20 → 2026-09-23**, no gaps in the
-  window (market holidays such as Presidents' Day carry no filings and are not gaps). Read the
-  live number any time at [`/v1/health`](https://api.tradestarinsider.com/v1/health).
+- **Insider Form 4 buys:** full history **2024-01-02 → 2026-10-09** (686 U.S. trading days),
+  no non-holiday gaps (market holidays such as Presidents' Day carry no filings and are not
+  gaps). Read the live number any time at
+  [`/v1/health`](https://api.tradestarinsider.com/v1/health) — it is the source of truth and
+  advances every business day. Every served purchase is a **filing-verified code-P purchase,
+  never an open-market guess**: records that can't be traced to a parsed SEC filing field are
+  dropped, never inferred.
 - **Completeness:** we capture **93.70%** of in-window open-market purchases (lower bound
   **87.28%**); of the filings we skip, only **0.75%** (95% CI 0.34–1.63%) turn out to be
   purchases we genuinely missed — the rest are sales, option exercises, amendments, and
-  sub-$50k buys we exclude by design.
+  sub-$50k buys we exclude by design. (This recall figure is from a sealed, pre-registered
+  20-trading-day study, 2026-08-17 → 2026-09-14; see
+  [**What we tested**](https://www.tradestarinsider.com/what-we-tested).)
 
 ## Install
 
@@ -132,7 +159,9 @@ Calling a keyed method without a key raises `InsiderSignalsError` with `status =
 
 ## Worked examples — one real request and response per tool
 
-Every response below is a real capture from the live public API (coverage as of 2026-09-23).
+Every response below is a real capture from the live public API (captured 2026-09-23; the
+`coverage_*` fields shown reflect that capture date — the live coverage window now runs to
+2026-10-09, read `/v1/health` for the current bounds).
 
 ### `today` — today's insider buys
 
