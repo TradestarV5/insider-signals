@@ -43,9 +43,10 @@ The **one measurable exception** is `uniform_price_cluster`: a deterministic
 *measurement* (not an inference) flagging clusters where ≥3 distinct insiders bought
 at the **identical price on the same filed date for the same issuer** — the
 fingerprint of an offering/conversion (one administered price) rather than
-independent open-market conviction. Form 4 transaction **code P** covers genuine
-code-P purchases *and* some offering/conversion purchases filed under the same code;
-this flag is how the latter are marked, and such rows are ranked below genuine clusters.
+independent open-market conviction. Form 4 transaction **code P** covers purchases of
+every kind — bought in the market, allocated in an IPO or offering, received in a
+private placement or a conversion. The `offering_context` flag tells them apart, and
+flagged rows are ranked below genuine clusters.
 
 ## Schema
 
@@ -105,7 +106,7 @@ is the source of truth, this snapshot is a convenience projection of it.
   preferred conversion), the sibling filings at that identical issuer+date+price are
   also marked `offering_context=true` with reason `"same offering, sibling filing"`.
   This closes the gap where a co-investor in the same deal looked like an independent
-  code-P buyer. Full-corpus effect: **40 rows across 14 same-offering groups
+  buyer. Full-corpus effect: **40 rows across 14 same-offering groups
   flipped `offering_context` false → true.** Before/after example: the $17.00 ADARx
   (ADRX) offering, transaction date 2026-09-28 — SR One Capital and George Simeon
   (filed 2026-09-29) were `false`, now `true` as siblings of the OrbiMed/Gordon
