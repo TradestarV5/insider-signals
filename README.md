@@ -334,12 +334,8 @@ programmatic SDK example.
 
 ## Pricing
 
-| Plan | Price | Requests |
-|------|-------|----------|
-| Basic | $0 | 3,000 / month |
-| Pro | $18 / month | 10,000 / month |
-| Ultra | $58 / month | 100,000 / month |
-| Mega | $100 / month | 500,000 / month |
+On RapidAPI the same two plans apply from 14 October 2026, Basic free and one $29 plan with
+100,000 calls a month. Until then the current RapidAPI plans remain.
 
 Hard limits, no overage — requests over the cap return `429` until the window resets. The free
 discovery surface and the MCP server are open and per-IP rate limited; metered API billing runs
