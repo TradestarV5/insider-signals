@@ -1,6 +1,6 @@
 """Insider Buy Signals — a tiny, dependency-free Python client for the TradeStar Insider API.
 
-Filing-verified U.S. insider open-market purchase signals from SEC EDGAR Form 4. Every field
+Filing-verified U.S. insider code P purchase signals from SEC EDGAR Form 4. Every field
 returned traces to a parsed field in a real filing and carries its ``filing_url`` on sec.gov
 (the service is filing-verified); records that can't be linked to a filing are dropped, never guessed.
 
@@ -110,7 +110,7 @@ class InsiderSignals:
     def verify(
         self, ticker: str, person: str, amount_usd: float | None = None
     ) -> dict[str, Any]:
-        """Verify an insider open-market-purchase claim against collected Form-4 filings.
+        """Verify an insider code P purchase claim against collected Form-4 filings.
         Returns the full envelope (``status`` is confirmed/partial/not_found/out_of_coverage).
         GET /public/v1/verify. No key."""
         return self._get(

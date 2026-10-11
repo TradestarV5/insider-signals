@@ -81,7 +81,7 @@ async function main() {
   console.log("\n# Cluster buys (2+ insiders, one company, within a 7-day window)");
   for (const s of (await api.clusters()).slice(0, 10)) printSignal(s);
 
-  console.log("\n# Verify a specific insider open-market-purchase claim");
+  console.log("\n# Verify a specific insider code P purchase claim");
   const v = await api.verify("ETRA", "ORBIMED ADVISORS LLC");
   console.log(
     `  status=${v.status}  count=${v.count}  coverage ${v.coverage_start}..${v.coverage_end}`,

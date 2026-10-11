@@ -101,7 +101,7 @@ new filings surface **next business day**, not live.
   advances every business day. Every served purchase is a **filing-verified code-P purchase,
   never an open-market guess**: records that can't be traced to a parsed SEC filing field are
   dropped, never inferred.
-- **Completeness:** we capture **93.70%** of in-window open-market purchases (lower bound
+- **Completeness:** we capture **93.70%** of in-window code P purchases (lower bound
   **87.28%**); of the filings we skip, only **0.75%** (95% CI 0.34–1.63%) turn out to be
   purchases we genuinely missed — the rest are sales, option exercises, amendments, and
   sub-$50k buys we exclude by design. (This recall figure is from a sealed, pre-registered
@@ -208,7 +208,7 @@ GET https://api.tradestarinsider.com/public/v1/signals/clusters
 }
 ```
 
-### `verify` — confirm an insider open-market-purchase claim
+### `verify` — confirm an insider code P purchase claim
 
 ```http
 GET https://api.tradestarinsider.com/public/v1/verify?ticker=ETRA&person=ORBIMED ADVISORS LLC
@@ -218,7 +218,7 @@ GET https://api.tradestarinsider.com/public/v1/verify?ticker=ETRA&person=ORBIMED
   "api_version": "v1",
   "endpoint": "verify",
   "coverage_start": "2026-01-20", "coverage_end": "2026-09-23",
-  "coverage_note": "Checked SEC Form-4 open-market purchases (code P) collected 2026-01-20..2026-09-23. Absence here means not in this window — not absence at the SEC.",
+  "coverage_note": "Checked SEC Form-4 code P purchases collected 2026-01-20..2026-09-23. Absence here means not in this window — not absence at the SEC.",
   "status": "confirmed",
   "matched": ["ticker/issuer", "person"],
   "filings": [
@@ -231,7 +231,7 @@ GET https://api.tradestarinsider.com/public/v1/verify?ticker=ETRA&person=ORBIMED
     }
   ],
   "count": 2,
-  "message": "Confirmed: 2 matching Form-4 open-market purchase filing(s)."
+  "message": "Confirmed: 2 matching Form-4 code P purchase filing(s)."
 }
 ```
 A claim with no matching filing returns `"status": "not_found"` (in-window) or
@@ -349,7 +349,7 @@ through RapidAPI.
 
 Information, not investment advice. Every figure is parsed from a public SEC filing and links to
 its source on sec.gov. Insider buying guarantees nothing — insiders are wrong plenty — but
-open-market purchases are real money on the line.
+code P purchases are real money on the line.
 
 ## License
 

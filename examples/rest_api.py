@@ -32,7 +32,7 @@ def main() -> None:
     for s in api.clusters()[:10]:
         _print_signal(s)
 
-    print("\n# Verify a specific insider open-market-purchase claim")
+    print("\n# Verify a specific insider code P purchase claim")
     v = api.verify("ETRA", "ORBIMED ADVISORS LLC")
     print(f"  status={v.get('status')}  count={v.get('count')}  "
           f"coverage {v.get('coverage_start')}..{v.get('coverage_end')}")

@@ -1,6 +1,6 @@
 ---
 license: mit
-pretty_name: "TradeStar Insider — SEC Form 4 Open-Market Purchase Signals"
+pretty_name: "TradeStar Insider — SEC Form 4 Code P Purchase Signals"
 language:
   - en
 task_categories:
@@ -17,18 +17,18 @@ size_categories:
 source_datasets:
   - original
 ---
-# TradeStar Insider — SEC Form 4 Open-Market Purchase Signals (last 30 days: 2026-09-11 → 2026-10-10)
+# TradeStar Insider — SEC Form 4 Code P Purchase Signals (last 30 days: 2026-09-12 → 2026-10-11)
 
-A rolling open snapshot of the **last 30 days** of insider **open-market purchase** signals extracted from **SEC EDGAR Form 4** filings. Every row is derived from a real, publicly filed Form 4 and links back to that exact filing on `sec.gov` via `filing_url`.
+A rolling open snapshot of the **last 30 days** of insider **code P purchase** signals extracted from **SEC EDGAR Form 4** filings. Every row is derived from a real, publicly filed Form 4 and links back to that exact filing on `sec.gov` via `filing_url`.
 
-- **Window in this file (free):** `2026-09-11` → `2026-10-10`  (the trailing 30 days — file: `insider-signals-last-30-days.csv`)
+- **Window in this file (free):** `2026-09-12` → `2026-10-11`  (the trailing 30 days — file: `insider-signals-last-30-days.csv`)
 - **Full history since 2024-01-02 is on the paid plan** — this free dataset carries the last 30 days only. The complete history, export, and higher call limits are available on the paid plan: https://www.tradestarinsider.com/pricing
-- **Rows in this snapshot:** 383
-- **Distinct tickers:** 125
-- **Cluster-buy rows:** 253  (≥2 insiders in the same issuer within the window)
+- **Rows in this snapshot:** 368
+- **Distinct tickers:** 120
+- **Cluster-buy rows:** 244  (≥2 insiders in the same issuer within the window)
 - **Uniform-price-cluster rows (offering/conversion tell):** 66
 - **Unlisted-issuer rows (`listed_equity=false`):** 53  (blank/NONE/N/A ticker, or a 5-letter mutual-fund class — shipped here but excluded from the live signal/cluster feeds by default)
-- **Total reported purchase value:** $740,506,290
+- **Total reported purchase value:** $726,855,130
 - **Coverage window of the live dataset:** `2024-01-02` → `2026-10-09`
 - **Cadence:** refreshed by cron; each refresh carries the trailing 30 days only (the free window). The full back-history is the paid plan.
 

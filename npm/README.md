@@ -1,6 +1,6 @@
 # insider-signals (TradeStar Insider — Node client)
 
-Filing-verified U.S. insider open-market **purchase** signals, parsed straight from SEC EDGAR
+Filing-verified U.S. insider code P **purchase** signals, parsed straight from SEC EDGAR
 Form 4 filings. This is the MIT-licensed **Node** client for the
 [TradeStar Insider](https://www.tradestarinsider.com) API and MCP server. It mirrors the Python
 [`insider-signals`](../) client method-for-method, so the two are consistent.
@@ -12,7 +12,7 @@ Form 4 filings. This is the MIT-licensed **Node** client for the
 
 ## What the data is
 
-We read Form 4 filings from SEC EDGAR and keep only the open-market **buys** that carry
+We read Form 4 filings from SEC EDGAR and keep only the code P **buys** that carry
 information — **cluster buys** (2+ insiders, same company, ≤7 days) and **large buys**
 (large relative to the insider's existing holdings). Option exercises, 10b5-1 planned sales,
 and sub-$50,000 noise are dropped. Every field returned is parsed from a real filing and ships
