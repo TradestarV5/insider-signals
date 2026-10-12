@@ -17,12 +17,12 @@ size_categories:
 source_datasets:
   - original
 ---
-# TradeStar Insider — SEC Form 4 Code P Purchase Signals (last 30 days: 2026-09-12 → 2026-10-11)
+# TradeStar Insider — SEC Form 4 Code P Purchase Signals (last 30 days: 2026-09-13 → 2026-10-12)
 
 A rolling open snapshot of the **last 30 days** of insider **code P purchase** signals extracted from **SEC EDGAR Form 4** filings. Every row is derived from a real, publicly filed Form 4 and links back to that exact filing on `sec.gov` via `filing_url`.
 
-- **Window in this file (free):** `2026-09-12` → `2026-10-11`  (the trailing 30 days — file: `insider-signals-last-30-days.csv`)
-- **Full history since 2024-01-02 is on the paid plan** — this free dataset carries the last 30 days only. The complete history, export, and higher call limits are available on the paid plan: https://www.tradestarinsider.com/pricing
+- **Window in this file (free):** `2026-09-13` → `2026-10-12`  (the trailing 30 days — file: `insider-signals-last-30-days.csv`)
+- **Full history since 2024 is on the paid plan** — this free dataset carries the last 30 days only. The paid plan is $29 a month on RapidAPI (100,000 calls a month, full history since 2024, plus export); get the key for the paid MCP endpoint from `/v1/mcp-key`. Pricing: https://www.tradestarinsider.com/pricing
 - **Rows in this snapshot:** 368
 - **Distinct tickers:** 120
 - **Cluster-buy rows:** 244  (≥2 insiders in the same issuer within the window)

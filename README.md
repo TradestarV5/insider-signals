@@ -30,7 +30,8 @@ sec.gov. Plans differ only in reach and volume:
 The free tier serves the last 30 days of filings. Older filings are not hidden: a request for
 an older date tells you the filing exists and is on the paid plan — it never claims that no
 filing exists. The `verify_*` tools check any filing across the full history for free. The paid
-plan opens on 14 October 2026.
+plan is $29 a month on RapidAPI: 100,000 calls a month and full history since 2024, plus the key
+for the paid MCP endpoint from `/v1/mcp-key`.
 
 (On RapidAPI the free Basic plan is 100 calls a day, or 3,000 calls a month where the console
 allows only a monthly quota.)
@@ -334,8 +335,9 @@ programmatic SDK example.
 
 ## Pricing
 
-On RapidAPI the same two plans apply from 14 October 2026, Basic free and one $29 plan with
-100,000 calls a month. Until then the current RapidAPI plans remain.
+RapidAPI is the checkout. Two plans: Basic (free) and one $29-a-month plan with 100,000 calls a
+month and full history since 2024. After subscribing, call `/v1/mcp-key` to get your key and both
+keyed URLs — the key also unlocks the paid MCP endpoint.
 
 Hard limits, no overage — requests over the cap return `429` until the window resets. The free
 discovery surface and the MCP server are open and per-IP rate limited; metered API billing runs
