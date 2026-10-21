@@ -15,6 +15,12 @@ MIT-licensed MCP server, client library, and worked examples for the
 - **REST (OpenAPI 3.0.2):** https://api.tradestarinsider.com/v1/openapi.json
 - **Live status:** https://status.tradestarinsider.com
 - **What we tested (negative results):** https://www.tradestarinsider.com/what-we-tested
+- **GitHub:** https://github.com/TradestarV5/insider-signals
+- **PyPI:** https://pypi.org/project/insider-signals-mcp/
+- **npm:** https://www.npmjs.com/package/insider-signals-mcp
+- **Hugging Face dataset:** https://huggingface.co/datasets/tradestarinsider/insider-signals-form4
+- **Kaggle dataset:** https://www.kaggle.com/datasets/tradestarinsider/insider-signals-form4
+- **RapidAPI:** https://rapidapi.com/tradestarinsider-tradestarinsider-default/api/insider-buy-signals1
 
 ## Free vs paid
 
@@ -25,7 +31,7 @@ sec.gov. Plans differ only in reach and volume:
 | --- | --- | --- |
 | Calls | 100 / day | 100,000 / month |
 | History | last 30 days | full history to 2024-01-02 + export |
-| Verify any filing | full history, always free | full history |
+| Verify any filing (free on both plans) | full history | full history |
 
 The free tier serves the last 30 days of filings. Older filings are not hidden: a request for
 an older date tells you the filing exists and is on the paid plan — it never claims that no
@@ -146,7 +152,7 @@ See [`examples/rest_api.py`](examples/rest_api.py) for a runnable version.
 | Tier | Methods | Access |
 |------|---------|--------|
 | **Free (no key)** | `health`, `today`, `clusters`, `verify`, `verify_13d`, `verify_8k`, `verify_13f` | Open `/public/v1`, per-IP rate limited |
-| **Keyed (RapidAPI)** | `by_ticker`, `by_range`, `filing`, `fund_changes`, `federal_awards_recent`, `activist_stakes_recent` | Metered, through RapidAPI |
+| **Keyed (RapidAPI)** | `by_ticker`, `by_range`, `filing`, `fund_changes`, `federal_awards_recent`, `activist_stakes_recent`, `amendments_recent` | Metered, through RapidAPI |
 
 For the keyed tier, subscribe on RapidAPI and construct the client with your key:
 
@@ -228,6 +234,11 @@ GET https://api.tradestarinsider.com/public/v1/verify?ticker=ETRA&person=ORBIMED
       "insider": "ORBIMED ADVISORS LLC",
       "code": "P", "shares": 1000000.0, "price_per_share": 15.0, "value_usd": 15000000.0,
       "filed_date": "2026-09-23", "accession": "0000947871-26-000880",
+      "transaction_date": "2026-09-19",
+      "acceptance_datetime": "2026-09-23T18:04:11-04:00",
+      "aff10b5One": 0,
+      "is_amendment": false,
+      "original_accession": null,
       "filing_url": "https://www.sec.gov/Archives/edgar/data/2088082/000094787126000880/0000947871-26-000880-index.htm"
     }
   ],
@@ -237,6 +248,36 @@ GET https://api.tradestarinsider.com/public/v1/verify?ticker=ETRA&person=ORBIMED
 ```
 A claim with no matching filing returns `"status": "not_found"` (in-window) or
 `"out_of_coverage"` (outside the collected days) — never a guess.
+
+**Purchase record fields.** Every confirmed purchase filing — on both `verify`
+(by claim) and the by-accession fetch — carries the same four extra fields, so a
+consumer reads one shape regardless of how the row was pulled:
+
+| field | meaning |
+| --- | --- |
+| `transaction_date` | the reported transaction date (Form 4 `periodOfReport`), distinct from `filed_date`; `null` when the filing carried no parseable date. |
+| `acceptance_datetime` | the EDGAR acceptance timestamp (when the SEC accepted the filing), ISO-8601 with offset; `null` on rows collected before this stamp was captured. |
+| `aff10b5One` | the 10b5-1 trading-plan flag parsed from the Form 4 (`1` = filer affirmed a 10b5-1 plan, `0` = not affirmed); `null` when the raw filing field was unavailable. |
+| `is_amendment` / `original_accession` | `is_amendment` is `true` for a Form 4/A; `original_accession` links it to the original it amends when that filing is in our collected window (SEC Form 4/A carries no native pointer, so the link is by issuer + reporting owner + period), else `null`. |
+
+Any field that could not be resolved is `null` **and** explained under a
+`partial_fields` object (field → reason) on that record — a missing value is never
+silent. A record with everything resolved omits `partial_fields` entirely. Example:
+
+```json
+"partial_fields": { "acceptance_datetime": "row collected before the acceptance stamp was captured" }
+```
+
+**Form 4/A amendments.** When an insider files a Form 4/A that corrects an earlier
+Form 4, `verify` returns the **amended** filing as the current record — the superseded
+original is not returned as a co-equal filing. If your claim cited the figure the
+amendment changed, the verdict carries a `superseded` object naming the
+`original_accession`, the `amendment_accession`, and the corrected figure, and the
+message says the figure was *corrected by 4/A*. The keyed `amendments_recent`
+(`GET /v1/amendments/recent`) lists these amendments newest-first, each with its
+`original_accession` and a `changed_fields` map of what the 4/A changed (before → after);
+an amendment whose original is outside our collected window is still listed, flagged
+`original_in_corpus: false`, with the before/after left `null` — never guessed.
 
 ### `verify_13d` — confirm a Schedule 13D activist-stake claim
 
@@ -319,6 +360,27 @@ GET https://api.tradestarinsider.com/public/v1/verify/13f?filer=BERKSHIRE HATHAW
 Every *data* route returns the same envelope; the rows live under `signals`, and the client's
 list-returning methods hand you that list directly. The `verify*` methods return the full
 envelope (you want the `status` and `matched`/`filings` fields).
+
+### List controls
+
+Every list route (`today`, `clusters`, `ticker`, `range`, `amendments/recent`) accepts the same
+optional query parameters. The response echoes the ones you set under `params` and always reports
+`total_matched`, so you page rather than hit a silent cap.
+
+| param | meaning |
+| --- | --- |
+| `limit` | max rows returned (default 25, newest-first); `limit<=0` removes the cap. |
+| `offset` | rows to skip before this page (pagination). |
+| `days` | keep only rows **filed** within the last N days (relative to today). |
+| `ticker` | case-insensitive exact ticker filter. |
+| `as_of` | **publish-boundary replay.** A UTC ISO-8601 instant (or a bare `YYYY-MM-DD`, read as end-of-day UTC). Returns only rows that had crossed our publish boundary at or before it — the exact feed a client would have seen at that past moment. |
+
+Every listing row carries `first_served_at` — the UTC ISO-8601 instant that row first crossed our
+publish boundary (the atomic write that made it public). It is stamped once, per ingest batch, and
+never rewritten, so it is a stable anchor for `as_of` replay and for measuring publish latency. On
+rows materialized before this field existed it is `null`, explained under `partial_fields` (and such
+rows are *kept* by an `as_of` query, since they were already public before the field). `as_of` is
+the companion to `days`: `days` bounds the *filing* date, `as_of` bounds *when we served it*.
 
 ## MCP server (for AI assistants)
 
