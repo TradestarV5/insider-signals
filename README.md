@@ -25,7 +25,7 @@ MIT-licensed MCP server, client library, and worked examples for the
 ## Free vs paid
 
 The data is the same on every plan. Every row is filing-verified and links to its source on
-sec.gov. Plans differ only in reach and volume:
+sec.gov. Plans differ in history, volume and export:
 
 | | Free | Paid — $29/month |
 | --- | --- | --- |
@@ -41,6 +41,11 @@ for the paid MCP endpoint from `/v1/mcp-key`.
 
 (On RapidAPI the free Basic plan is 100 calls a day, or 3,000 calls a month where the console
 allows only a monthly quota.)
+
+There are two free ways in, each with its own limit: the **open, no-key** endpoint
+(`mcp.tradestarinsider.com/mcp` and `/public/v1`) is rate-limited **per IP** (a burst cap, for
+casual and discovery use); **RapidAPI Basic** meters **per key** at **100 calls/day** (the quota
+plan). Both serve the same 30-day free window.
 
 Full pricing and a key: https://www.tradestarinsider.com/pricing
 
@@ -166,9 +171,12 @@ Calling a keyed method without a key raises `InsiderSignalsError` with `status =
 
 ## Worked examples — one real request and response per tool
 
-Every response below is a real capture from the live public API (captured 2026-09-23; the
-`coverage_*` fields shown reflect that capture date — the live coverage window now runs to
-2026-10-09, read `/v1/health` for the current bounds).
+Every response below is a real capture from the live public API, on the **free** tier (no key).
+The two free list tools (`today`, `clusters`) were re-captured on 2026-10-21 and show the free
+30-day window in their `coverage_*` fields — a free caller sees exactly this. The `verify_*`
+examples are from an earlier capture (2026-09-23); verification is full-history on every plan, so
+their `coverage_*` fields reflect that capture date and are not clamped to the 30-day window. The
+live coverage window moves daily — read `/v1/health` for the current bounds.
 
 ### `today` — today's insider buys
 
@@ -181,7 +189,10 @@ GET https://api.tradestarinsider.com/public/v1/signals/today
   "endpoint": "signals/today",
   "rule2_guarantee": "Every record traces to a parsed SEC filing field and carries its source filing_url. Records without a filing link are dropped upstream and never returned.",
   "count": 0,
-  "params": { "date": "2026-09-24" },
+  "coverage_start": "2026-09-22", "coverage_end": "2026-10-20",
+  "coverage_note": "Insider (Form-4 code P) signals collected 2026-09-22..2026-10-20. An empty result means no matching filing in this window — not absence at the SEC.",
+  "total_matched": 0,
+  "params": { "date": "2026-10-21", "limit": 25 },
   "signals": []
 }
 ```
@@ -197,19 +208,26 @@ GET https://api.tradestarinsider.com/public/v1/signals/clusters
 {
   "api_version": "v1",
   "endpoint": "signals/clusters",
-  "count": 1596,
+  "count": 1,
+  "coverage_start": "2026-09-22", "coverage_end": "2026-10-20",
+  "coverage_note": "Insider (Form-4 code P) signals collected 2026-09-22..2026-10-20. An empty result means no matching filing in this window — not absence at the SEC.",
+  "total_matched": 177,
+  "params": { "limit": 1 },
   "signals": [
     {
-      "filed_date": "2026-07-22",
-      "ticker": "CLBK",
-      "issuer_name": "Columbia Financial, Inc./MD/",
-      "insider": "Splaine Thomas Jr",
-      "relationship": { "director": false, "officer": true, "officer_title": "EVP, CFO" },
+      "filed_date": "2026-10-19",
+      "ticker": "APLD",
+      "issuer_name": "Applied Digital Corp.",
+      "issuer_cik": "0001144879",
+      "insider": "Jason Zhang",
+      "relationship": { "director": false, "officer": true, "ten_pct_owner": false, "officer_title": "President" },
       "code": "P",
-      "shares": 50000.0, "price_per_share": 10.0, "value_usd": 500000.0,
-      "cluster": true, "cluster_insiders": 16, "cluster_notional": 4760370.0,
-      "accession": "0001339736-26-000014",
-      "filing_url": "https://www.sec.gov/Archives/edgar/data/2115119/000133973626000014/0001339736-26-000014-index.htm"
+      "shares": 300000.0, "price_per_share": 18.86, "value_usd": 5658000.0,
+      "transaction_date": "2026-10-16", "acceptance_datetime": "2026-10-19T07:06:33-04:00",
+      "cluster": true, "cluster_insiders": 2, "cluster_notional": 6664686.12,
+      "offering_context": false, "uniform_price_cluster": false,
+      "accession": "0001900445-26-000006",
+      "filing_url": "https://www.sec.gov/Archives/edgar/data/1900445/000190044526000006/0001900445-26-000006-index.htm"
     }
   ]
 }
