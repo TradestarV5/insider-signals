@@ -43,9 +43,11 @@ for the paid MCP endpoint from `/v1/mcp-key`.
 allows only a monthly quota.)
 
 There are two free ways in, each with its own limit: the **open, no-key** endpoint
-(`mcp.tradestarinsider.com/mcp` and `/public/v1`) is rate-limited **per IP** (a burst cap, for
-casual and discovery use); **RapidAPI Basic** meters **per key** at **100 calls/day** (the quota
-plan). Both serve the same 30-day free window.
+(`mcp.tradestarinsider.com/mcp` and `/public/v1`) enforces a hard **100 data calls per day per
+IP**, resetting at **00:00 UTC** — over the cap it returns a plain message (a tool result on MCP,
+HTTP 429 on REST), never a transport error. MCP handshakes and `verify_*` checks both behave as
+expected (handshakes are free; a verify counts as one call). **RapidAPI Basic** meters **per key**
+at the same **100 calls/day**. Both serve the same 30-day free window.
 
 Full pricing and a key: https://www.tradestarinsider.com/pricing
 
