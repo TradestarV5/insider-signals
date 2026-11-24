@@ -1,5 +1,7 @@
 # Insider Buy Signals
 
+[![TradestarV5/insider-signals MCP server](https://glama.ai/mcp/servers/TradestarV5/insider-signals/badges/score.svg)](https://glama.ai/mcp/servers/TradestarV5/insider-signals)
+
 **Verify any U.S. SEC filing claim, field-by-field, against the filing it came from.** Every
 figure here — shares, price, dollar value, percent, stake size — traces to a parsed field in a
 real EDGAR filing and ships with a link to that filing on sec.gov. Records that can't be linked
